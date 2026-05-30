@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Users {
+  id           Int         @id @default(autoincrement())
+  firstname    String      @db.VarChar(100)
+  lastname     String      @db.VarChar(100)
+  username     String      @unique @db.VarChar(100)
+  email        String      @unique @db.VarChar(100)
+  passwordhash String
+  createdat    DateTime?   @default(now()) @db.Timestamp(6)
+  updatedat    DateTime?   @default(now()) @db.Timestamp(6)
+  workflows    Workflows[]
+  workspaces   Workspaces[]
+
+}
+
+model Workspaces {
+  id        Int        @id @default(autoincrement())
+  name      String?    @db.VarChar(100)
+  ownerid   Int
+  createdat DateTime?  @default(now()) @db.Timestamp(6)
+  workflows Workflows[]
+  users     Users       @relation(fields: [ownerid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_w_o")
+
+}
+
+model Workflows {
+  id            Int         @id @default(autoincrement())
+  workspaceid   Int
+  ownerid       Int
+  name          String?     @db.VarChar(100)
+  description   String?
+  active        Boolean
+  triggertype   String      @db.VarChar(100)
+  triggerconfig Json?
+  settings      String?
+  nodes         Json
+  edges         Json
+  createdat     DateTime?   @default(now()) @db.Timestamp(6)
+  updatedat     DateTime?   @default(now()) @db.Timestamp(6)
+  executions    Executions[]
+  users         Users        @relation(fields: [ownerid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_w_o")
+  workspaces    Workspaces   @relation(fields: [workspaceid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_w_w")
+
+}
+
+model Executions {
+  id                Int                 @id @default(autoincrement())
+  workflowid        Int
+  status            String              @db.VarChar(100)
+  triggerdata       Json?
+  startedat         DateTime            @default(now()) @db.Timestamp(6)
+  finishedat        DateTime?           @db.Timestamp(6)
+  duration          Int?
+  errormessage      String?             @db.VarChar(100)
+  executionnodedata executionnodedata[]
+  workflows         Workflows            @relation(fields: [workflowid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_e_w")
+
+}
+
+model executionnodedata {
+  id            Int       @id @default(autoincrement())
+  executionid   Int
+  nodeid       	String 
+  nodetype      String
+  status        String?   @db.VarChar(100)
+  inputdata     String?
+  outputdata    String?
+  errormessage  String?   @db.VarChar(100)
+  executiontime Int?
+  startedat     DateTime? @default(now()) @db.Timestamp(6)
+  executions    Executions @relation(fields: [executionid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_en_e")
+}
