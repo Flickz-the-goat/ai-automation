@@ -1,5 +1,6 @@
 import { handleAi } from "@/bullmq/handler/handleAi";
 import { handleHttp } from "@/bullmq/handler/handleHttp";
+import { handleIf } from "@/bullmq/handler/handleIf";
 import { Node } from "@xyflow/react";
 
 export interface executionReturnType {
@@ -20,5 +21,6 @@ export type NodeHandler = (
 export const nodeHandlers: Record<string, NodeHandler> = {
 	"httpRequest": handleHttp,
 	"aiNode": handleAi,
+	"ifNode": handleIf,
 }
 

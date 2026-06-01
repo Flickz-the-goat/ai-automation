@@ -10,11 +10,10 @@ interface CardProps {
 
 export default function Card({ icon, text, type, providerType }: CardProps) {
 	const { addNodes, getNodes } = useReactFlow();
-	
-	const typeCount = getNodes().filter((n) => n.type === type).length
-	const onClick = () => {
-		const id = `${type}-${typeCount}`;
 
+	const onClick = () => {
+		const typeCount = getNodes().filter((n) => n.type === type).length
+		const id = `${type}-${typeCount}`;
 		switch (type) {
 			case "httpRequest":
 				addNodes({
@@ -39,13 +38,27 @@ export default function Card({ icon, text, type, providerType }: CardProps) {
 				break
 			case "provider":
 				addNodes({
-				id,
-				position: {x:0, y:0},
-				data: {type: providerType},
-				type,
-				selectable: false,
-			})
-			break
+					id,
+					position: { x: 0, y: 0 },
+					data: { type: providerType },
+					type,
+					selectable: false,
+				})
+				break
+			case "ifNode":
+				console.log(type, typeCount, id)
+				addNodes({
+					id,
+					position: { x: 0, y: 0 },
+					data: {
+						left: "",
+						operator: "",
+						right: "",
+						status: "initial",
+					},
+					type,
+				})
+				break
 			default:
 				break;
 		}

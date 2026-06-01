@@ -31,6 +31,26 @@ export async function recuriseExecute(job: Job, nodes: Node[], edges: Edge[], ex
 		nodeMap.set(n.id, n)
 	})
 
+	// Handle If Nodes
+	for(const [id, node] of nodeMap){
+		if(node.type! === "ifNode"){
+			outgoing.delete(id)
+			outgoing.set(id, [`true-${id}`, `false-${id}`])
+			outgoing.set(`true-${id}`, [])
+			outgoing.set(`false-${id}`, [])
+
+			edges.map((e) => {
+				e.source == id && e.sourceHandle! == "true" ? (
+					outgoing.get(`true-${id}`)!.push(e.target)
+				) : (
+					outgoing.get(`false-${id}`)!.push(e.target)
+				)
+			})
+
+		}
+	}
+	console.log(outgoing)
+
 	const triggerOut = outgoing.get("node_0")!
 	if (!triggerOut) {
 		job.updateProgress({ nodeid: "node_0", status: "error" })
@@ -73,11 +93,18 @@ async function executeNode(outputs: Map<string, executionReturnType>, job: Job, 
 		await job.updateProgress({ nodeid: node.id, status: "error" })
 		return res
 	}
-
+	if(node.type! == "ifNode"){
+		res.data == true ? (
+			outgoing.set(node.id, outgoing.get(`true-${node.id}`)!)
+		) : (
+			outgoing.set(node.id, outgoing.get(`false-${node.id}`)!)
+		)
+	}
 	const children = outgoing.get(node.id)
+	console.log("Bache", children)
+
 	if (children) {
 		for (const child in children) {
-			console.log("Child", children[child])
 			const res = await executeNode(outputs, job, nodeMap.get(children[child])!, incoming, outgoing, nodeMap)
 			if (res.status === "Failed") return res
 		}

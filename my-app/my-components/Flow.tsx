@@ -11,11 +11,13 @@ import { Workflows } from "@/app/generated/prisma/client";
 import WorkspacesNavbar from "./misc/WorkspacesNavbar";
 import NodesTable from "./misc/NodesTable";
 import Provider from "./Nodes/ProviderNode";
+import IfNode from "./Nodes/IfNode";
 
 const nodeTypes =  {
 	'httpRequest': HttpRequest,
 	'manualTrigger': ManualTrigger,
 	'aiNode': AiNode, 
+	"ifNode": IfNode,
 	'provider': Provider,
 	}
 

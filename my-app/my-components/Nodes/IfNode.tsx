@@ -1,26 +1,27 @@
-import { BaseNode } from "@/components/base-node";
-import { Position,  type NodeProps } from "@xyflow/react";
-import { Check, Globe, X } from "lucide-react";
-import LimitHandle from "../misc/LimitHandle";
-import { useNodeEditor } from "@/context/NodeEditorContext";
-import { HttpRequestNodeType } from "@/types/NodeTypes";
-import { NodeStatusIndicator } from "@/components/node-status-indicator";
+import { Position, type NodeProps } from "@xyflow/react"
+import { IfNodeType } from "@/types/NodeTypes"
+import { NodeStatusIndicator } from "@/components/node-status-indicator"
+import { BaseNode } from "@/components/base-node"
+import { Split, X, Check } from "lucide-react"
+import { useNodeEditor } from "@/context/NodeEditorContext"
+import LimitHandle from "../misc/LimitHandle"
 
-export default function HttpRequest({ id, data }: NodeProps<HttpRequestNodeType>) {
+export default function IfNode({ id, data }: NodeProps<IfNodeType>) {
 	const { setSelectedNode } = useNodeEditor()
-
 	const onClick = () => {
-		setSelectedNode(
-			{
-				id: id,
-				type: "httpRequest",
-				data,
-			})
-	};
+
+		setSelectedNode({
+			id: id,
+			type: "ifNode",
+			data,
+
+		})
+	}
+
 	return (
 		<NodeStatusIndicator status={data.status} variant="overlay">
 			<BaseNode
-				onClick={onClick}
+				onClick={() => { onClick() }}
 				className={`
 					h-12 w-12
 					flex items-center justify-center
@@ -33,7 +34,7 @@ export default function HttpRequest({ id, data }: NodeProps<HttpRequestNodeType>
 					relative
 				`}
 			>
-				<Globe className="h-4 w-4 stroke-zinc-700" />
+				<Split className="h-4 w-4 stroke-linear-to-b rotate-90 from-purple-500 to-pink-500" />
 				{
 					data.status === "error" && (
 						<div className="absolute -right-1 -top-1 flex h-3 w-3 items-center justify-center rounded-full border border-red-200 bg-red-50">
@@ -50,17 +51,12 @@ export default function HttpRequest({ id, data }: NodeProps<HttpRequestNodeType>
 				}
 			</BaseNode>
 
-			<LimitHandle
-				connectionCount={1}
-				position={Position.Left}
-				type="target"
-			/>
+			<LimitHandle connectionCount={1} type="target" position={Position.Left} />
 
-			<LimitHandle
-				connectionCount={1}
-				position={Position.Right}
-				type="source"
-			/>
+			<LimitHandle connectionCount={2} type="source" position={Position.Right} className="-translate-y-3" id="true"/>
+		
+			<LimitHandle connectionCount={2} type="source" position={Position.Right} className="translate-y-3" id="false"/>
+
 		</NodeStatusIndicator>
-	);
+	)
 }

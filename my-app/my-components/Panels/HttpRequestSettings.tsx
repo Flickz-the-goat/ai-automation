@@ -1,18 +1,17 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { HttpRequestNodeType } from "@/types/NodeTypes";
 import { Check } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
-	data: {
-		endpoint?: string,
-		method: string,
-	};
+	node: HttpRequestNodeType,
 	onChange: (data: any) => void;
 };
 
-export default function HttpRequestSettings({ data, onChange }: Props) {
+export default function HttpRequestSettings({ node, onChange }: Props) {
+	const data = node.data
 	const [url, setUrl] = useState(data.endpoint)
 	const [changed, setChanged] = useState(false)
 

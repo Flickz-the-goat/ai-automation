@@ -3,6 +3,8 @@ import HttpRequestSettings from "./HttpRequestSettings";
 import { Panel } from "@xyflow/react";
 import { X } from "lucide-react";
 import AiNodeSettings from "./AiNodeSettings";
+import { HttpRequestNodeType, IfNodeType } from "@/types/NodeTypes";
+import IfNodeSettings from "./IfNodeSettings";
 
 export default function NodeSettingsPanel() {
 	const {selectedNode, setSelectedNode, setNodes} = useNodeEditor()
@@ -39,13 +41,17 @@ export default function NodeSettingsPanel() {
 			case "httpRequest":
 				return (
 					<HttpRequestSettings
-						data={selectedNode.data}
+						node={selectedNode as HttpRequestNodeType}
 						onChange={updateNodeData}
 					/>
 				);
 			case "aiNode":
 				return (
 					<AiNodeSettings id={selectedNode.id} data={selectedNode.data} onChange={updateNodeData}/>
+			)
+			case "ifNode":
+				return (
+					<IfNodeSettings node={selectedNode as IfNodeType} onChange={updateNodeData}/>
 			)
 			default:
 				return (

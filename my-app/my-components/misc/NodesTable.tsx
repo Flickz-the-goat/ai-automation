@@ -1,6 +1,6 @@
 import {Panel} from "@xyflow/react"
 import Card from "../Card"
-import { Bot } from "lucide-react"
+import { Bot, Split } from "lucide-react"
 import Image from "next/image"
 
 export default function NodesTable(){
@@ -18,6 +18,7 @@ export default function NodesTable(){
 				<div className="flex flex-col gap-2 p-3">
 					<Card icon={"HTTP"} text="HTTP Request" type="httpRequest" providerType="none"/>
 					<Card icon={<Bot />} text="AI" type="aiNode" providerType="none"/>
+					<Card icon={<Split />} text="IF Statement" type="ifNode" providerType="none"/>
 				</div>
 
 				<div className="px-4 py-3 border-b border-zinc-200">
